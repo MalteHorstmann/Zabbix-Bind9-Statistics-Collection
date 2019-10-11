@@ -129,19 +129,21 @@ else:
                 for stat in child.iterfind('./counter'):
                     j['incounter'][stat.attrib['name']] = stat.text
         # they are only for block _default
-        for child in root.iterfind('./views/view/counters'):
-            # V2 ./bind/statistics/views/view/rdtype
-            if child.attrib['type'] == 'resqtype':
-                for stat in child.iterfind('./counter'):
-                    j['outcounter'][stat.attrib['name']] = stat.text
-            # V2 ./bind/statistics/views/view => _default name only
-            if child.attrib['type'] == 'resstats':
-                for stat in child.iterfind('./counter'):
-                    j['resolvercounter'][stat.attrib['name']] = stat.text
-            # V2: no (only in memory detail stats)
-            if child.attrib['type'] == 'cachestats':
-                for stat in child.iterfind('./counter'):
-                    j['cache'][stat.attrib['name']] = stat.text
+        for defroot in root.iterfind('./views/'):
+            if defroot.attrib['name']=='_default':
+                for child in defroot.iterfind('./counters'):
+                   # V2 ./bind/statistics/views/view/rdtype
+                   if child.attrib['type'] == 'resqtype':
+                       for stat in child.iterfind('./counter'):
+                            j['outcounter'][stat.attrib['name']] = stat.text
+                   # V2 ./bind/statistics/views/view => _default name only
+                   if child.attrib['type'] == 'resstats':
+                        for stat in child.iterfind('./counter'):
+                            j['resolvercounter'][stat.attrib['name']] = stat.text
+                # V2: no (only in memory detail stats)
+                   if child.attrib['type'] == 'cachestats':
+                        for stat in child.iterfind('./counter'):
+                            j['cache'][stat.attrib['name']] = stat.text
         # V2 has @name = localhost_resolver, interal, external
         for child in root.iterfind('./views/view/cache'):
             if (child.attrib['name'] == '_default'):
